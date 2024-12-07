@@ -1,20 +1,17 @@
 class Vertex
-  attr_accessor :root, :possible_moves
+  attr_accessor :square, :possible_moves
 
-  def initialize(root)
-    @root = root
+  def initialize(square)
+    @square = square
     @possible_moves = {
-    1 => [root[0] + 2, root[1] + 1],
-    2 => [root[0] + 1, root[1] + 2],
-    3 => [root[0] - 1, root[1] + 2],
-    4 => [root[0] - 2, root[1] + 1],
-    5 => [root[0] - 2, root[1] - 1],
-    6 => [root[0] - 1, root[1] - 2],
-    7 => [root[0] + 1, root[1] - 2],
-    8 => [root[0] + 2, root[1] - 1]}
+    0 => [square[0] + 2, square[1] + 1],
+    1 => [square[0] + 1, square[1] + 2],
+    2 => [square[0] - 1, square[1] + 2],
+    3 => [square[0] - 2, square[1] + 1],
+    4 => [square[0] - 2, square[1] - 1],
+    5 => [square[0] - 1, square[1] - 2],
+    6 => [square[0] + 1, square[1] - 2],
+    7 => [square[0] + 2, square[1] - 1]}
   end
+
 end
-
-vertex = Vertex.new([0, 0])
-
-p vertex.possible_moves[1]
