@@ -1,46 +1,58 @@
 require_relative 'square'
 
 class Knight
-  attr_accessor :coords, :target
+  attr_accessor :coords, :target, :visited
 
-  def initialize(coords, target)
-    @coords = coords
-    @target = target
+  def initialize
+    @coords = nil
+    @target = nil
+    @visited = []
   end
 
-  def get_moves(target = @target)
-    all_moves = [[target[0] + 2, target[1] + 1],
-    [target[0] + 1, target[1] + 2],
-    [target[0] - 1, target[1] + 2],
-    [target[0] - 2, target[1] + 1],
-    [target[0] - 2, target[1] - 1],
-    [target[0] - 1, target[1] - 2],
-    [target[0] + 1, target[1] - 2],
-    [target[0] + 2, target[1] - 1]]
+  def get_moves(square)
+    all_moves = [[square[0] + 2, square[1] + 1],
+    [square[0] + 1, square[1] + 2],
+    [square[0] - 1, square[1] + 2],
+    [square[0] - 2, square[1] + 1],
+    [square[0] - 2, square[1] - 1],
+    [square[0] - 1, square[1] - 2],
+    [square[0] + 1, square[1] - 2],
+    [square[0] + 2, square[1] - 1]]
     all_moves
   end
 
   def is_valid_move?(coords)
-    return true if coords[0].between?(0, 7) && coords[1].between?(0, 7)
+    return true if coords[0].between?(0, 7) && coords[1].between?(0, 7) && !@visited.include?(coords)
     false
-  end 
+  end
 
-  def build_adj_list
-    moves = get_moves
+  def build_adjacency_list(square)
+    moves = get_moves(square)
     possible_moves = []
     moves.each do |move|
-      p move
       possible_moves << move if is_valid_move?(move)
     end
     possible_moves
   end
 
+  def knight_moves(start, target)
+    queue = []
+    queue << target
+
+    until queue.empty?
+      current = queue.shift
+      p current
+      @visited << current
+      build_adjacency_list(current).each {|next_move| queue << next_move if !queue.include?(next_move)}
+
+    end
+  end
+
 end
 
-knight = Knight.new([0, 0], [0, 0])
+knight = Knight.new
 
-p knight.get_moves
-p knight.build_adj_list
-
+p knight.knight_moves([0, 0], [3, 3])
+p knight.visited.size
 
 
