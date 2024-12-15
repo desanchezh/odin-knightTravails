@@ -1,58 +1,49 @@
 require_relative 'square'
 
 class Knight
-  attr_accessor :coords, :target, :visited
+  attr_accessor :visited
 
   def initialize
-    @coords = nil
-    @target = nil
     @visited = []
   end
 
-  def get_moves(square)
-    all_moves = [[square[0] + 2, square[1] + 1],
-    [square[0] + 1, square[1] + 2],
-    [square[0] - 1, square[1] + 2],
-    [square[0] - 2, square[1] + 1],
-    [square[0] - 2, square[1] - 1],
-    [square[0] - 1, square[1] - 2],
-    [square[0] + 1, square[1] - 2],
-    [square[0] + 2, square[1] - 1]]
-    all_moves
-  end
+  def make_graph(start, target)
+    queue = [Square.new(start)]
+    current = queue.shift
 
-  def is_valid_move?(coords)
-    return true if coords[0].between?(0, 7) && coords[1].between?(0, 7) && !@visited.include?(coords)
-    false
-  end
-
-  def build_adjacency_list(square)
-    moves = get_moves(square)
-    possible_moves = []
-    moves.each do |move|
-      possible_moves << move if is_valid_move?(move)
+    until current.coords == target
+      current.next_moves.each do |move|
+        current.children << new_square = Square.new(move, current)
+        queue << new_square
+      end
+      current = queue.shift
     end
-    possible_moves
+    current
+  end
+
+  def get_history(current, history, start)
+    until current.coords == start
+      history << current.coords
+      current = current.parent
+    end
+    history << current.coords
   end
 
   def knight_moves(start, target)
-    queue = []
-    queue << target
+    current = make_graph(start, target)
+    history = []
+    get_history(current, history, start)
 
-    until queue.empty?
-      current = queue.shift
-      p current
-      @visited << current
-      build_adjacency_list(current).each {|next_move| queue << next_move if !queue.include?(next_move)}
+    puts "Knight took #{history.size - 1} moves to go from #{start} to #{target}!"
+    puts "Here's the path:"
+    history.reverse.each {|coords| puts coords.to_s}
 
-    end
   end
-
 end
 
 knight = Knight.new
 
-p knight.knight_moves([0, 0], [3, 3])
-p knight.visited.size
+knight.knight_moves([3,3],[4,3])
+knight.knight_moves([0,0],[6,5])
 
 
